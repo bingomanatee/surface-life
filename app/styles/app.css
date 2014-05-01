@@ -1,0 +1,21 @@
+html {
+  background: #fff;
+}
+
+.mediumGrass {
+    background-color: rgb(0, 128, 0);
+}
+
+.tallGrass {
+    background-color: rgb(0, 63, 9);
+}
+.tallGrass2 {
+    background-color: rgb(100, 96, 36);
+}
+.tallGrass3 {
+    background-color: rgb(11, 118, 79);
+}
+
+.youngGrass {
+    background-color: rgb(1,1,1);
+}
