@@ -13,15 +13,20 @@ define(function (require, exports, module) {
 
   mainContext.setPerspective(1000);
 
-  var world = new World(50, 50, 1, 20);
+  var world = new World(5, 5, 1, 20);
 
   var monster = new DirtMonster(0, 0, 0, world);
 
   var mod = new StateModifier({
     origin: [0, 0],
-    transform: Transform.moveThen( [250, -100, -100], Transform.rotateX(Math.PI/3))
+    transform: Transform.moveThen( [250, -100, -100], Transform.rotateX(Math.PI/6))
   });
   mainContext.add(mod).add(world);
+
+  setInterval(function(){
+    console.log('world snapshot')
+    console.log(world.snapshot());
+  }, 5000);
 
   monster.startMoving();
 });

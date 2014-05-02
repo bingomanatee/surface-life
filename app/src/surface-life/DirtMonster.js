@@ -47,6 +47,7 @@ define(function (require, exports, module) {
   _.extend(DirtMonster.prototype, View.prototype);
 
   _.extend(DirtMonster.prototype, {
+    STYPE: 'DirtMonster',
 
     constructor: DirtMonster,
 
@@ -60,7 +61,7 @@ define(function (require, exports, module) {
     growTransform: function () {
       return Transform.multiply(
         Transform.scale(this.growSize, this.growSize, this.growSize),
-        Transform.moveThen([0, -this.size(), 0], Transform.rotateX(Math.PI/-2))
+        Transform.moveThen([0, -this.size(), 0], Transform.rotateX(Math.PI/-4))
       );
 
     },
@@ -78,7 +79,6 @@ define(function (require, exports, module) {
 
       this._rn.add(this._grassModifier).add(this.grass);
 
-      console.log('starting to grow ', this.dmid);
       this._growing = setInterval(function(){
 
         this.updateSize();
@@ -86,7 +86,6 @@ define(function (require, exports, module) {
         if (this.growSize >= 1){
           clearInterval(this._growing);
           this._growing = null;
-          console.log('done growing ', this.dmid);
         }
       }.bind(this), 200);
     },
@@ -111,11 +110,12 @@ define(function (require, exports, module) {
 
     detach: function () {
       this.stopMoving();
-      return;
       if (this._growing) {
-        console.log('stopping frowth of ', this.dmid);
         clearInterval(this._growing);
       }
+      this.mod().halt();
+      this.surface().setContent('X');
+      this.options.world.detach_item(this); // should orphan the item.
     },
 
     setContent: function (item) {
@@ -152,13 +152,9 @@ define(function (require, exports, module) {
 
       var c = this.options.world.contents(ii, jj, kk);
 
-      if (c && c.length) {
+      if (c && c[this.STYPE]) {
         return;
       }
-
-      var monster = new DirtMonster(this.loc.i, this.loc.j, this.loc.k, this.options.world);
-
-      setTimeout(monster.startMoving.bind(monster), 3000);
 
       this.options.world.move_item(
         this,
@@ -169,6 +165,13 @@ define(function (require, exports, module) {
         this.loc.j,
         this.loc.k
       );
+
+      this.move_to(ii, jj, kk);
+
+      var monster = new DirtMonster(this.loc.i, this.loc.j, this.loc.k, this.options.world);
+
+      setTimeout(monster.startMoving.bind(monster), 3000);
+
       this.growSize = 0.05;
     },
 
